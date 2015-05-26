@@ -19,8 +19,8 @@
     "watchify": "^2.1.1"
   },
   "scripts": {
-    "start": "watchify -o js/bundle.js -v -d .",
-    "build": "browserify -d . -o js/bundle.js",
+    "start": "watchify -o js/build/bundle.js -v -d .",
+    "build": "browserify -d . -o js/build/bundle.js",
     "test": "jest"
   },
   "author": "Drew Banin",
