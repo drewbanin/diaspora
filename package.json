@@ -1,0 +1,32 @@
+{
+  "name": "diaspora",
+  "version": "0.0.1",
+  "description": "...",
+  "repository": "",
+  "main": "./js/app.js",
+  "dependencies": {
+    "color": "^0.7.3",
+    "flux": "^2.0.1",
+    "jquery": "^2.1.4",
+    "moment": "^2.9.0",
+    "object-assign": "^1.0.0",
+    "react": "^0.12.0",
+    "underscore": "^1.5.2"
+  },
+  "devDependencies": {
+    "browserify": "^6.2.0",
+    "reactify": "^0.15.2",
+    "watchify": "^2.1.1"
+  },
+  "scripts": {
+    "start": "watchify -o js/bundle.js -v -d .",
+    "build": "browserify -d . -o js/bundle.js",
+    "test": "jest"
+  },
+  "author": "Drew Banin",
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
+  }
+}
