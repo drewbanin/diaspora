@@ -1,6 +1,15 @@
 
 var ImageProcessor = require('./image_processor.js');
 
+// great name for this, Drew. Factor multipliers for different features
+var FEAT_HOSP = {
+  forest: 10,
+  desert: -1,
+  water: 20, // be careful, living in the ocean isn't so great...
+  mountain: -3,
+  ice: -3,
+};
+
 var Map = function(dimensions) {
   this.dimensions = dimensions
   this.map = {};
@@ -20,13 +29,21 @@ Map.prototype.adjacent_blocks = function() {
   return adj;
 };
 
-Map.prototype.hospitability = function(block_x, block_y) {
-  var key = this.hash(block_x, block_y);
-  var features = this.map[key];
-  if (!features) { console.error("NO FEATURES FOUND FOR", block_x, block_y); }
+Map.prototype.get_hospitability = function(bx, by) {
+  return this.map[this.hash(bx, by)].hospitability;
+};
 
-  console.log(features);
-  return 1;
+Map.prototype.hospitability = function(features) {
+  var f = features;
+  if (f.pct_water > 0.2) {
+    return -1000;
+  }
+  var hosp = f.pct_forest * FEAT_HOSP.forest +
+         f.pct_desert * FEAT_HOSP.desert +
+         f.pct_water  * FEAT_HOSP.water  +
+         f.pct_mountainous * FEAT_HOSP.mountain +
+         f.pct_ice * FEAT_HOSP.ice;
+  return Math.max(hosp, 0);
 };
 
 Map.prototype.hash = function(block_x, block_y) {
@@ -54,6 +71,7 @@ Map.prototype.update = function(ctx, populations) {
     var features = ImageProcessor.getBlockFeatures(ctx, block);
     this.map[hash] = {
       features: features,
+      hospitability: this.hospitability(features),
     }
   }.bind(this));
 

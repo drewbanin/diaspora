@@ -36,7 +36,9 @@ var Earth = function(canvas, dimensions, image_src, initial_population) {
 };
 
 Earth.prototype.mainloop = function() {
+  // interesting idea -- update screen and run sim at different rates?
   setInterval(function() {
+    var start = Date.now();
     var ctx = this.ctx;
     ctx.clearRect(0 ,0, this.canvas.width, this.canvas.height);
     ctx.drawImage(this.map_image, 0, 0, this.dimensions.width, this.dimensions.height);
@@ -51,7 +53,8 @@ Earth.prototype.mainloop = function() {
     this.populations.step(this.map);
 
     HUD.render(this.ctx, this.stats);
-  }.bind(this), 1000);
+    console.log('elapsed', (Date.now() - start) / 1000);
+  }.bind(this), 100);
 };
 
 Earth.prototype.draw_grid = function(ctx) {
