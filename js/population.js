@@ -4,100 +4,60 @@ var Color = require("color");
 // maximum population density per square. This is too low for the real sim, but
 // it seems like a reasonable number for testing
 var MAX_POPULATION = 1000;
-//var POP_CHANGE_RATE = 1.2;
-var POP_CHANGE_RATE = 2.0;
 
 var Population = function(dimensions) {
   this.position = dimensions.position;
   this.size = dimensions.size;
 
-  // is 5% a good number? Assume 50% is able bodied, 10% of those are adventurous
   this.pct_explorers = 0.20;
   this.pct_settlers = 0.80;
 };
 
-// Each step, the population will split. New populations are returned for each
-// adjacent square the population splits to (with the correct position)
-//
-// This is currently random and that's currently bad. Instead, distribution from
-// THIS node should be a function of the hospitability of the surrounding nodes
-// and their densities!
-//
-// ok ok ok. so:
-//  - some population stays put
-//    - how many?
-//  - some travel
-//    - how many? in which directions?
-//  - some people live and some die
-//
-//  # who stay is proportion of "settlers", # who leave is proportion of explorers
-//  # distribution is weighted by hospitability and density of surrounding blocks
-//  this function needs the hospitability of each block around it and # of people
 Population.prototype.step = function(map) {
-  // TODO : account for deaths and births!
   var count = this.size;
-
-  // SIMPLE IS GOOD (for now)
-  //
-  // calc relative hospitabilities for this + surrounding blocks, ex:
-  //      -1   0  -2     1 2 0
-  //       3   0   5     5   7
-  //      -1  -1   3     1 1 5
-  //                            sum = 22
-  //
-  // num stay = floor(p(settler) * count)
-  // num_leave = count - num_stay
-  // distributions are weighted proportions of surrounding hospitabilities
-  // p(left)    5/22
-  // p(right) = 7/22
-  // ...
-
-  var num_stay = Math.floor(this.pct_settlers * count);
-  count -= num_stay;
-
-  var deltas = [-1, 0, 1];
 
   var bx = this.position.block_x;
   var by = this.position.block_y;
 
+  var hosp_here = map.get_hospitability(bx, by);
+
+  var num_staying = this.pct_settlers * count;
+  var new_size = num_staying + num_staying * this.population_change(num_staying);
+  var new_size = Math.min(new_size, MAX_POPULATION);
+
+  var populations = [new Population(this.get_dimensions(0, 0, new_size))];
+
+  count -= num_staying;
+
+  var deltas = [-1, 0, 1];
+
   hosps = [];
-  var min_hosp = null;
   _.each(deltas, function(dx) {
     _.each(deltas, function(dy) {
       var hosp = map.get_hospitability(bx + dx, by + dy);
-      var data = {dx: dx, dy: dy, h: hosp};
-      if (min_hosp === null || hosp < min_hosp) { min_hosp = hosp; }
+      var data = {dx: dx, dy: dy, score: hosp.score, possible: hosp.possible};
       hosps.push(data);
     }.bind(this));
   }.bind(this))
 
-  var hosp_sum = 0;
-  _.each(hosps, function(hosp) {
-    // make everything positive
-    if (min_hosp < 0) { hosp.h -= min_hosp;  }
-    hosp_sum += hosp.h;
-  }.bind(this));
+  var hosp_sum = Math.max(0.01, _.reduce(hosps, function(memo, hosp) { return memo + hosp.score; }, 0));
 
-  // sort by descending hospitality
-  hosps.sort(function(a, b) { return (a.h < b.h) ? 1 : -1; });
-
-  var new_size = Math.min(MAX_POPULATION, Math.floor(num_stay * POP_CHANGE_RATE));
-  var populations = [new Population(this.get_dimensions(0, 0, new_size))];
-  // we have `count` people left to distribute
 
   _.each(hosps, function(hosp) {
-    if (hosp_sum == 0) {
-      var pop_size = 0;
-    } else {
-      var pop_size = Math.floor(count * (hosp.h / hosp_sum));
+    if (hosp.possible) {
+      var score = hosp.score;
+      var pop_size = Math.floor(count * score / hosp_sum);
+      var pop = new Population(this.get_dimensions(hosp.dx, hosp.dy, pop_size));
+      populations.push(pop);
     }
-    if (_.isNaN(pop_size)) debugger
-    pop = new Population(this.get_dimensions(hosp.dx, hosp.dy, pop_size));
-    populations.push(pop);
   }.bind(this));
 
   return populations;
 }
+
+Population.prototype.population_change = function(size) {
+  return Math.cos((Math.PI * this.size) / MAX_POPULATION);
+},
 
 Population.prototype.get_dimensions = function(dx, dy, size) {
   return {

@@ -8,7 +8,7 @@ var Earth = function(canvas, dimensions, image_src, initial_population) {
 
   this.canvas = canvas;
   this.dimensions = dimensions;
-  this.timeout = 1000;
+  this.timeout = 100;
 
   this.ctx = canvas.getContext("2d");
 
