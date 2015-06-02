@@ -9,8 +9,8 @@ var Population = function(dimensions) {
   this.position = dimensions.position;
   this.size = dimensions.size;
 
-  this.pct_explorers = 0.20;
-  this.pct_settlers = 0.80;
+  this.pct_explorers = 0.80;
+  this.pct_settlers = 0.20;
 };
 
 Population.prototype.step = function(map) {
@@ -41,7 +41,6 @@ Population.prototype.step = function(map) {
   }.bind(this))
 
   var hosp_sum = Math.max(0.01, _.reduce(hosps, function(memo, hosp) { return memo + hosp.score; }, 0));
-
 
   _.each(hosps, function(hosp) {
     if (hosp.possible) {

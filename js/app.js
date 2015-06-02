@@ -31,6 +31,7 @@ var population_dimension = {
 }
 var initial_population = new Population(population_dimension);
 
-var earth = new Earth(canvas, dimensions, img_src, initial_population);
-earth.mainloop();
+var earth = new Earth(canvas, dimensions, img_src, initial_population, function(earth) {
+  earth.mainloop();
+}.bind(this));
 

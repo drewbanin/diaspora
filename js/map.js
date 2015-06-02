@@ -53,6 +53,11 @@ Map.prototype.hash = function(block_x, block_y) {
 };
 
 
+Map.prototype.getFeatures = function(ctx, x, y, block_size) {
+  var block = {x: x, y: y, block_size: block_size};
+  return ImageProcessor.getBlockFeatures(ctx, block);
+};
+
 // update the population's understanding of the map. This entails adding features from
 // each block surrounding an occupied block to the this.map hash. Naively, this will
 // check every surrouding block on every step. That sucks, so let's find some dirty checking

@@ -3,7 +3,7 @@ var HUD = require('./hud.js');
 var Populations = require('./populations.js');
 var Map = require('./map.js');
 
-var Earth = function(canvas, dimensions, image_src, initial_population) {
+var Earth = function(canvas, dimensions, image_src, initial_population, loaded) {
   var image_src = image_src;
 
   this.canvas = canvas;
@@ -12,8 +12,6 @@ var Earth = function(canvas, dimensions, image_src, initial_population) {
 
   this.ctx = canvas.getContext("2d");
 
-  this.map_image = document.createElement('img');
-  this.map_image.src = image_src;
   this.populations = new Populations(dimensions.block_size);
   this.populations.add(initial_population);
 
@@ -24,16 +22,31 @@ var Earth = function(canvas, dimensions, image_src, initial_population) {
     mouse : {
       x: 0,
       y: 0
-    }
+    },
+    features: {}
   };
+
+  this.map_image = document.createElement('img');
+  this.map_image.src = image_src;
+  this.map_image.onload = function() {
+    loaded(this);
+  }.bind(this);
 
   canvas.addEventListener('mousemove', function(evt) {
     var rect = this.canvas.getBoundingClientRect();
     this.stats.mouse.x = evt.clientX - rect.left;
     this.stats.mouse.y = evt.clientY - rect.top;
-    this.stats.mouse.block_x = Math.floor((evt.clientX - rect.left) / this.dimensions.block_size);
-    this.stats.mouse.block_y = Math.floor((evt.clientY - rect.top) / this.dimensions.block_size);
+
+    var bs = this.dimensions.block_size;
+    var bx = Math.floor((evt.clientX - rect.left) / bs);
+    var by = Math.floor((evt.clientY - rect.top) / bs);
+
+    this.stats.mouse.block_x = bx;
+    this.stats.mouse.block_y = by;
+
+    this.stats.features = this.map.getFeatures(this.ctx, bx * bs, by * bs, bs);
   }.bind(this), false);
+
 };
 
 Earth.prototype.mainloop = function() {

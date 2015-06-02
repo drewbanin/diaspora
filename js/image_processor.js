@@ -41,12 +41,10 @@ var ImageProcessor = {
     var total_pixels = block.block_size * block.block_size;
 
     return {
-      pct_desert: pixel_counts.desert / total_pixels,
       pct_water: pixel_counts.water / total_pixels,
+      pct_desert: pixel_counts.desert / total_pixels,
       pct_forest: pixel_counts.forest / total_pixels,
       pct_ice: pixel_counts.ice / total_pixels,
-      pct_mountainous: 0,
-      temperature: 0,
     }
   },
 
