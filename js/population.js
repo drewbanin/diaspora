@@ -116,7 +116,7 @@ Population.prototype.render = function(ctx, block_size) {
   var y = this.position.block_y * block_size;
   ctx.fillStyle = this.get_color();
   ctx.beginPath();
-  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.arc(x + radius, y + radius, radius, 0, 2 * Math.PI);
   ctx.fill();
 };
 

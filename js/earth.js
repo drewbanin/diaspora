@@ -8,6 +8,7 @@ var Earth = function(canvas, dimensions, image_src, initial_population) {
 
   this.canvas = canvas;
   this.dimensions = dimensions;
+  this.timeout = 1000;
 
   this.ctx = canvas.getContext("2d");
 
@@ -36,25 +37,22 @@ var Earth = function(canvas, dimensions, image_src, initial_population) {
 };
 
 Earth.prototype.mainloop = function() {
-  // interesting idea -- update screen and run sim at different rates?
-  setInterval(function() {
-    var start = Date.now();
-    var ctx = this.ctx;
-    ctx.clearRect(0 ,0, this.canvas.width, this.canvas.height);
-    ctx.drawImage(this.map_image, 0, 0, this.dimensions.width, this.dimensions.height);
+  var start = Date.now();
+  var ctx = this.ctx;
+  ctx.clearRect(0 ,0, this.canvas.width, this.canvas.height);
+  ctx.drawImage(this.map_image, 0, 0, this.dimensions.width, this.dimensions.height);
 
-    // this has to come immediately after drawImage before anything else is
-    // drawn! it scans the canvas to determine what features exist in the necessary blocks
-    this.map.update(this.ctx, this.populations);
+  // this has to come immediately after drawImage before anything else is
+  // drawn! it scans the canvas to determine what features exist in the necessary blocks
+  this.map.update(this.ctx, this.populations);
 
-    this.draw_grid(ctx);
+  this.draw_grid(ctx);
 
-    this.populations.render(ctx);
-    this.populations.step(this.map);
+  this.populations.render(ctx);
+  this.populations.step(this.map);
 
-    HUD.render(this.ctx, this.stats);
-    console.log('elapsed', (Date.now() - start) / 1000);
-  }.bind(this), 100);
+  HUD.render(this.ctx, this.stats);
+  setTimeout(this.mainloop.bind(this), this.timeout);
 };
 
 Earth.prototype.draw_grid = function(ctx) {

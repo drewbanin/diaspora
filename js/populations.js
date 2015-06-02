@@ -27,8 +27,6 @@ Populations.prototype.render = function(ctx) {
   _.each(this.populations, function(population, hash) {
     population.render(ctx, this.block_size);
   }.bind(this));
-
-  // console.log("" + Object.keys(this.populations).length + " populations");
 };
 
 Populations.prototype.add = function(population) {
