@@ -1,19 +1,22 @@
 
 var HUD = require('./hud.js');
 var Populations = require('./populations.js');
+var Population = require('./population')
 var Map = require('./map.js');
 
-var Earth = function(canvas, dimensions, image_src, initial_population, loaded) {
+var Earth = function(canvas, ctx, dimensions, image_src, population_dimension, loaded) {
   var image_src = image_src;
 
   this.canvas = canvas;
+  this.ctx = ctx;
   this.dimensions = dimensions;
-  this.timeout = 100;
+  this.timeout = 60;
+  this.TICKS = 0;
 
-  this.ctx = canvas.getContext("2d");
 
   this.populations = new Populations(dimensions.block_size);
-  this.populations.add(initial_population);
+
+  this.populations.add(new Population(population_dimension, 0, this.populations));
 
   // hash of grid coords -> block information
   this.map = new Map(this.dimensions, this.ctx, this.dimensions.block_size);
@@ -64,15 +67,16 @@ Earth.prototype.mainloop = function() {
 
   // we need to advance the state before we redraw because some components need
   // to query the map!
-  this.populations.step(this.map);
+  this.populations.step(this.map, this.TICKS);
 
   this.populations.render(ctx);
-  this.draw_grid(ctx);
+  //this.draw_grid(ctx);
 
   if (this.stats.mouse.block_x && this.stats.mouse.block_y)
     this.stats.population = this.populations.population_at(this.stats.mouse.block_x, this.stats.mouse.block_y);
 
   HUD.render(this.ctx, this.stats);
+  this.TICKS += 1;
   setTimeout(this.mainloop.bind(this), this.timeout);
 };
 

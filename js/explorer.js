@@ -7,7 +7,7 @@ var STATES = {
   chilling: "chilling",
 };
 
-var MAX_DISTANCE = 5;
+var MAX_DISTANCE = 10;
 
 var Explorer = function(population) {
   this.population = population;
@@ -25,9 +25,13 @@ var Explorer = function(population) {
     score: 0,
     pos: null,
   };
+
+  this.global_ticks = 1;
 };
 
-Explorer.prototype.step = function(map) {
+Explorer.prototype.step = function(map, global_ticks) {
+  this.global_ticks = global_ticks;
+
   if (this.is_exploring() && !this.reached_target()) {
     var valid = this.move_to_target(map);
     if (!valid)
@@ -47,9 +51,10 @@ Explorer.prototype.step = function(map) {
     this.position = move;
   } else if (this.state == STATES.returning && this.reached_home()) {
     var pop_hosp = map.get_hospitability(this.population.position.block_x, this.population.position.block_y);
-    if (this.best.score > pop_hosp.score) {
-      this.state = STATES.chilling;
-      console.log('moving population from', this.population.position, 'to', this.best.pos, 'because', this.best.score, '>', pop_hosp.score);
+    // TODO : don't actually do multiplication here
+    var adjusted_best_score = !!this.best.pos ? this.best.score * this.distance(this.population.position, this.best.pos) : 0;
+    this.state = STATES.chilling;
+    if (pop_hosp.score < adjusted_best_score) {
       var move_subset = [];
       var found = false;
       _.each(this.moves_from_target, function(move) {
@@ -65,12 +70,21 @@ Explorer.prototype.step = function(map) {
       this.best = { score: 0, pos: null };
       this.moves = [];
       this.moves_from_target = [];
-      this.explore();
     }
   } else if (this.state == STATES.chilling) {
-    //this.explore();
+  }
+
+  if (this.population.size < 1) {
+    //this.population.delete_explorer();
   }
 };
+
+Explorer.prototype.distance = function(from, to) {
+  var x = from.block_x - to.block_x;
+  var y = from.block_y - to.block_y;
+  return Math.sqrt(x*x + y*y);
+};
+
 
 Explorer.prototype.reached_home = function(map) {
   return this.population.position.block_x == this.position.block_x &&
@@ -94,7 +108,8 @@ Explorer.prototype.return_to_home = function(map) {
 Explorer.prototype.explore = function(map) {
   this.state = STATES.exploring;
   this.moves.push(this.population.position);
-  this.target_pos = this.random_pos_from_here(MAX_DISTANCE);
+  var max_distance = Math.floor(Math.log(this.global_ticks + 1));
+  this.target_pos = this.random_pos_from_here(max_distance);
 };
 
 Explorer.prototype.move_to_target = function(map) {
@@ -124,9 +139,13 @@ Explorer.prototype.move_to_target = function(map) {
   return hosp.possible;
 };
 
-Explorer.prototype.random_pos_from_here = function(MAX_DISTANCE) {
-  var dx = _.random(0, MAX_DISTANCE * 2) - MAX_DISTANCE;
-  var dy = _.random(0, MAX_DISTANCE * 2) - MAX_DISTANCE;
+Explorer.prototype.random_pos_from_here = function(max_distance) {
+  var dx = _.random(0, max_distance);
+  var dy = _.random(0, max_distance);
+
+  if (_.random(0,1) == 1) dx *= -1;
+  if (_.random(0,1) == 1) dy *= -1;
+
   return {
     block_x: this.position.block_x + dx,
     block_y: this.position.block_y + dy,
@@ -147,9 +166,9 @@ Explorer.prototype.render = function(ctx, block_size) {
 
 Explorer.prototype.get_color = function() {
   var color;
-  if (this.state == STATES.chilling) color = Color({r: 0, g: 0, b: 255});
-  if (this.state == STATES.exploring) color = Color({r: 255, g: 0, b: 0});
-  if (this.state == STATES.returning) color = Color({r: 0, g: 255, b: 0});
+  if (this.state == STATES.chilling) color = Color({r: 0, g: 0, b: 0, a: 0});
+  if (this.state == STATES.exploring) color = Color({r: 255, g: 255, b: 255, a: 0.5});
+  if (this.state == STATES.returning) color = Color({r: 0, g: 0, b: 0, a: 0.5});
   return color.rgbaString();
 };
 

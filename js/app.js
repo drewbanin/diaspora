@@ -4,7 +4,6 @@ _ = require('underscore');
 $ = require('jquery');
 
 var Earth = require('./earth')
-var Population = require('./population')
 
 var dimensions = {
   block_size: 16,
@@ -15,10 +14,21 @@ var dimensions = {
 dimensions.h_blocks = dimensions.width / dimensions.block_size;
 dimensions.v_blocks = dimensions.height / dimensions.block_size;
 
-
 var canvas = document.getElementById("earth");
 canvas.width  = dimensions.width;
 canvas.height = dimensions.height;
+
+ctx = canvas.getContext("2d");
+
+var stripe_img = document.createElement('img');
+stripe_img.src = "/img/stripe.png";
+
+// can i do this?
+STRIPE_PATTERN = null;
+stripe_img.onload = function() {
+  STRIPE_PATTERN = ctx.createPattern(stripe_img,"repeat");
+}.bind(this);
+
 
 var img_src = "/img/earth.png";
 
@@ -29,9 +39,8 @@ var population_dimension = {
   },
   size: 100
 }
-var initial_population = new Population(population_dimension);
 
-var earth = new Earth(canvas, dimensions, img_src, initial_population, function(earth) {
+var earth = new Earth(canvas, ctx, dimensions, img_src, population_dimension, function(earth) {
   earth.mainloop();
 }.bind(this));
 
