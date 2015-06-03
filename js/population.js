@@ -20,9 +20,10 @@ var Population = function(dimensions, num_ticks, parent) {
 
   this.moves_to_target = [];
   this.moving = false;
+  this.surrounded = false;
 };
 
-Population.prototype.relocate = function(pos, moves) {
+Population.prototype.relocate = function(pos, moves, populations) {
   this.moves_to_target = moves;
 
   var this_size = Math.max(Math.floor(this.size * this.pct_explorers), 1);
@@ -31,6 +32,7 @@ Population.prototype.relocate = function(pos, moves) {
   if (this_size < 1 || other_size < 1) debugger
 
   var new_pop = new Population({position: this.position, size: this_size}, this.num_ticks, this.parent);
+  new_pop.surrounded = this.surrounded;
   this.size = other_size;
   this.num_ticks = 0;
 
@@ -54,6 +56,10 @@ Population.prototype.move_to = function(pos) {
 Population.prototype.step = function(map, global_ticks) {
   this.num_ticks += 1;
 
+  if (this.num_ticks > 1000) {
+    this.explorer.state = "chilling";
+    return // inert
+  }
 
   var hosp = map.get_hospitability(this.position.block_x, this.position.block_y);
   var max_pop = this.max_population(hosp.score);
@@ -67,9 +73,11 @@ Population.prototype.step = function(map, global_ticks) {
     this.move_to(this.moves_to_target.pop());
   } else if (this.explorer.state == "chilling") {
     this.moving = false;
-    if (this.num_ticks > 50 && this.num_ticks < 200 && _.random(0, 100) > 90 ||
-       _.random(0, 1000) > 990) {
+    if (!this.surrounded && this.num_ticks > 50 && _.random(0, 100) > 95) {
       this.explorer.explore();
+      var adj = this.parent.adjacent_populations(this);
+      // once this it set, we won't enter this if block again!
+      this.surrounded = adj.length > 4;
     }
   }
 

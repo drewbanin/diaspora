@@ -53,7 +53,7 @@ Populations.prototype.adjacent_populations = function(pop) {
     var pos2 = population.position;
     return (Math.abs(pos2.block_x - pos.block_x) <= 1 &&
             Math.abs(pos2.block_y - pos.block_y) <= 1 &&
-            pos2.block_x != pos.block_x && pos2.block_y != pos.block_y);
+            (pos.block_x != pos2.block_x && pos.block_y != pos2.block_y));
   }.bind(this));
 };
 
