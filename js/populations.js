@@ -34,6 +34,7 @@ Populations.prototype.add = function(population) {
 
   if (existing) {
     if (!existing.moving && !population.moving) {
+      existing.target_pos = null;
       existing.merge(population);
     }
     delete population;
