@@ -16,7 +16,7 @@ var Earth = function(canvas, dimensions, image_src, initial_population, loaded) 
   this.populations.add(initial_population);
 
   // hash of grid coords -> block information
-  this.map = new Map(this.dimensions);
+  this.map = new Map(this.dimensions, this.ctx, this.dimensions.block_size);
 
   this.stats = {
     mouse : {
@@ -44,8 +44,9 @@ var Earth = function(canvas, dimensions, image_src, initial_population, loaded) 
     this.stats.mouse.block_x = bx;
     this.stats.mouse.block_y = by;
 
-    this.stats.features = this.map.getFeatures(this.ctx, bx * bs, by * bs, bs);
+    this.stats.features = this.map.getFeatures(bx * bs, by * bs, bs);
     this.stats.score = this.map.hospitability(this.stats.features);
+
     this.stats.population = this.populations.population_at(bx, by);
   }.bind(this), false);
 
@@ -61,10 +62,12 @@ Earth.prototype.mainloop = function() {
   // drawn! it scans the canvas to determine what features exist in the necessary blocks
   this.map.update(this.ctx, this.populations);
 
-  this.draw_grid(ctx);
+  // we need to advance the state before we redraw because some components need
+  // to query the map!
+  this.populations.step(this.map);
 
   this.populations.render(ctx);
-  this.populations.step(this.map);
+  this.draw_grid(ctx);
 
   if (this.stats.mouse.block_x && this.stats.mouse.block_y)
     this.stats.population = this.populations.population_at(this.stats.mouse.block_x, this.stats.mouse.block_y);
@@ -91,15 +94,5 @@ Earth.prototype.draw_grid = function(ctx) {
     ctx.stroke();
   }.bind(this));
 }
-
-Earth.prototype.populate = function(ctx, options) {
-  var density = 100;
-  var position = {
-    x: 2300,
-    y: 1000,
-  };
-
-  return new Population(position, density);
-};
 
 module.exports = Earth;

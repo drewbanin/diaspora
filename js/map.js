@@ -4,15 +4,17 @@ var ImageProcessor = require('./image_processor.js');
 // great name for this, Drew. Factor multipliers for different features
 var FEAT_HOSP = {
   forest: 10,
-  desert: 3,
+  desert: 0.03,
   water: 30, // be careful, living in the ocean isn't so great...
-  mountain: 2,
-  ice: 1,
+  mountain: 0.02,
+  ice: 0.01,
 };
 
-var Map = function(dimensions) {
+var Map = function(dimensions, ctx, block_size) {
   this.dimensions = dimensions
   this.map = {};
+  this.ctx = ctx;
+  this.block_size = block_size;
 };
 
 Map.prototype.adjacent_blocks = function() {
@@ -30,12 +32,24 @@ Map.prototype.adjacent_blocks = function() {
 };
 
 Map.prototype.get_hospitability = function(bx, by) {
-  return this.map[this.hash(bx, by)].hospitability;
+  var cached = this.map[this.hash(bx, by)];
+  if (cached) {
+    return cached.hospitability;
+  } else {
+    var features = this.getFeatures(bx * this.block_size, by * this.block_size, this.block_size);
+    var hospitability = this.hospitability(features);
+    var hash = this.hash(bx, by);
+    this.map[hash] = {
+      hospitability: hospitability,
+      features: features,
+    };
+    return hospitability;
+  }
 };
 
 Map.prototype.hospitability = function(features) {
   var f = features;
-  if (f.pct_water > 0.2) {
+  if (f.pct_water > 0.4) {
     return {possible: false, score: 0};
   }
 
@@ -52,9 +66,9 @@ Map.prototype.hash = function(block_x, block_y) {
 };
 
 
-Map.prototype.getFeatures = function(ctx, x, y, block_size) {
+Map.prototype.getFeatures = function(x, y, block_size) {
   var block = {x: x, y: y, block_size: block_size};
-  return ImageProcessor.getBlockFeatures(ctx, block);
+  return ImageProcessor.getBlockFeatures(this.ctx, block);
 };
 
 // update the population's understanding of the map. This entails adding features from
