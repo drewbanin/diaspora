@@ -45,6 +45,8 @@ var Earth = function(canvas, dimensions, image_src, initial_population, loaded) 
     this.stats.mouse.block_y = by;
 
     this.stats.features = this.map.getFeatures(this.ctx, bx * bs, by * bs, bs);
+    this.stats.score = this.map.hospitability(this.stats.features);
+    this.stats.population = this.populations.population_at(bx, by);
   }.bind(this), false);
 
 };
@@ -63,6 +65,9 @@ Earth.prototype.mainloop = function() {
 
   this.populations.render(ctx);
   this.populations.step(this.map);
+
+  if (this.stats.mouse.block_x && this.stats.mouse.block_y)
+    this.stats.population = this.populations.population_at(this.stats.mouse.block_x, this.stats.mouse.block_y);
 
   HUD.render(this.ctx, this.stats);
   setTimeout(this.mainloop.bind(this), this.timeout);

@@ -23,6 +23,14 @@ Populations.prototype.step = function(map) {
   }.bind(this));
 };
 
+Populations.prototype.hash = function(bx, by) {
+  return "" + bx + "," + by;
+};
+
+Populations.prototype.population_at = function(bx, by) {
+  return this.populations[this.hash(bx, by)];
+};
+
 Populations.prototype.render = function(ctx) {
   _.each(this.populations, function(population, hash) {
     population.render(ctx, this.block_size);

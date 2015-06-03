@@ -3,10 +3,10 @@ var ImageProcessor = require('./image_processor.js');
 
 // great name for this, Drew. Factor multipliers for different features
 var FEAT_HOSP = {
-  forest: 30,
-  desert: 5,
-  water: 20, // be careful, living in the ocean isn't so great...
-  mountain: 1,
+  forest: 10,
+  desert: 3,
+  water: 30, // be careful, living in the ocean isn't so great...
+  mountain: 2,
   ice: 1,
 };
 
@@ -42,7 +42,6 @@ Map.prototype.hospitability = function(features) {
   var hosp = f.pct_forest * FEAT_HOSP.forest +
          f.pct_desert * FEAT_HOSP.desert +
          f.pct_water  * FEAT_HOSP.water  +
-         f.pct_mountainous * FEAT_HOSP.mountain +
          f.pct_ice * FEAT_HOSP.ice;
 
   return {possible: true, score: hosp}
