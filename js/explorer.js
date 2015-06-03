@@ -29,7 +29,7 @@ var Explorer = function(population) {
   this.global_ticks = 1;
 };
 
-Explorer.prototype.step = function(map, global_ticks) {
+Explorer.prototype.step = function(map, global_ticks, populations) {
   this.global_ticks = global_ticks;
 
   if (this.is_exploring() && !this.reached_target()) {
@@ -38,7 +38,7 @@ Explorer.prototype.step = function(map, global_ticks) {
       this.return_to_home();
     else {
       var hosp_here = map.get_hospitability(this.position.block_x, this.position.block_y);
-      if (hosp_here.score > this.best.score) {
+      if (hosp_here.score > this.best.score && !populations.occupied(this.position)) {
         this.best.score = hosp_here.score;
         this.best.pos = this.position;
       }

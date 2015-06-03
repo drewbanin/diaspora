@@ -67,12 +67,13 @@ Population.prototype.step = function(map, global_ticks) {
     this.move_to(this.moves_to_target.pop());
   } else if (this.explorer.state == "chilling") {
     this.moving = false;
-    if (this.num_ticks > 50 && this.num_ticks < 400 && _.random(0, 100) > 90) {
+    if (this.num_ticks > 50 && this.num_ticks < 200 && _.random(0, 100) > 90 ||
+       _.random(0, 1000) > 990) {
       this.explorer.explore();
     }
   }
 
-  this.explorer.step(map, global_ticks);
+  this.explorer.step(map, global_ticks, this.parent);
 };
 
 Population.prototype.max_population = function(hosp) {
@@ -103,8 +104,12 @@ Population.prototype.render = function(ctx, block_size) {
 };
 
 Population.prototype.get_color = function() {
-  var alpha = Math.min(this.size / MAX_POPULATION, 0.7);
-  var color = Color({r: 0, g: 0, b: 0, a: alpha});
+  if (this.moving) {
+    var color = Color({r: 255, g: 0, b: 0, a: 1});
+  } else {
+    var alpha = Math.min(this.size / MAX_POPULATION, 0.7);
+    var color = Color({r: 0, g: 0, b: 0, a: alpha});
+  }
   return color.rgbaString();
 };
 
