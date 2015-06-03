@@ -2,7 +2,7 @@
 var Population = require('./population')
 
 var Populations = function(block_size) {
-  this.populations = {};
+  this.populations = []
   this.block_size = block_size;
 };
 
@@ -10,39 +10,35 @@ var Populations = function(block_size) {
 // Then add them to the new population dict and replace the existing one.
 Populations.prototype.step = function(map, global_ticks) {
   var new_pops = []
-  _.each(this.populations, function(population, hash) {
+  _.each(this.populations, function(population, index) {
     population.step(map, global_ticks);
-    if (population.size < 1) {
-      delete this.populations[hash];
-    }
   }.bind(this));
 
   //console.log("pops: ", Object.keys(this.populations).length);
 };
 
-Populations.prototype.hash = function(bx, by) {
-  return "" + bx + "," + by;
-};
-
 Populations.prototype.population_at = function(bx, by) {
-  return this.populations[this.hash(bx, by)];
+  return _.find(this.populations, function(pop) {
+    return pop.position.block_x == bx && pop.position.block_y == by;
+  }.bind(this));
 };
 
 Populations.prototype.render = function(ctx) {
-  _.each(this.populations, function(population, hash) {
-    //if (population.position.block_x == 150 && population.position.block_y == 60) debugger
+  _.each(this.populations, function(population, index) {
     population.render(ctx, this.block_size);
   }.bind(this));
 };
 
 Populations.prototype.add = function(population) {
-  var hash = population.hash();
+  var existing = this.population_at(population.position.block_x, population.position.block_y);
 
-  if (this.populations[hash]) {
-    this.populations[hash].merge(population);
+  if (existing) {
+    if (!existing.moving && !population.moving) {
+      existing.merge(population);
+    }
     delete population;
   } else {
-    this.populations[hash] = population;
+    this.populations.push(population);
   }
 }
 
@@ -61,4 +57,3 @@ Populations.prototype.adjacent_blocks = function() {
 }
 
 module.exports = Populations;
-
