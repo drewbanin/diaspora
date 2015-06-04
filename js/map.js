@@ -10,7 +10,7 @@ var FEAT_HOSP = {
   ice: 0.01,
 };
 
-var MAX_TEMP = 10;
+var MAX_TEMP = 7;
 
 var Map = function(dimensions, ctx, block_size) {
   this.dimensions = dimensions
@@ -60,7 +60,9 @@ Map.prototype.hospitability = function(features, latitude) {
          f.pct_water  * FEAT_HOSP.water  +
          f.pct_ice * FEAT_HOSP.ice;
 
-  hosp = Math.max(hosp - f.pct_cold * f.pct_cold, 0.1);
+  if (f.pct_cold > 0.5) {
+    hosp = Math.max(hosp - f.pct_cold * MAX_TEMP, 0.1);
+  }
 
   return {possible: true, score: hosp}
 };
