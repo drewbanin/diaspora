@@ -3,7 +3,7 @@
 var HUD = {
 
   render: function(ctx, stats) {
-    if (stats.mouse.block_x && stats.mouse.block_y) {
+    if (_.isNumber(stats.mouse.block_x) && _.isNumber(stats.mouse.block_y)) {
 
       ctx.fillStyle = "#000";
       var font_size = 24;

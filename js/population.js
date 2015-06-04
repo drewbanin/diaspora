@@ -104,7 +104,7 @@ Population.prototype.get_dimensions = function(dx, dy, size) {
 }
 
 Population.prototype.render = function(ctx, block_size) {
-  var x = this.position.block_x * block_size;
+  var x = this.position.block_x * block_size % this.dimensions.width;
   var y = this.position.block_y * block_size;
   ctx.fillStyle = this.get_color();
   ctx.fillRect(x, y, block_size, block_size);
