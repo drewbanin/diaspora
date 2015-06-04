@@ -70,7 +70,7 @@ Earth.prototype.mainloop = function() {
   this.populations.step(this.map, this.TICKS);
 
   this.populations.render(ctx);
-  //this.draw_grid(ctx);
+  this.draw_grid(ctx);
 
   if (this.stats.mouse.block_x && this.stats.mouse.block_y)
     this.stats.population = this.populations.population_at(this.stats.mouse.block_x, this.stats.mouse.block_y);

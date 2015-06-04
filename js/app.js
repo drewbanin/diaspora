@@ -20,22 +20,15 @@ canvas.height = dimensions.height;
 
 ctx = canvas.getContext("2d");
 
-var stripe_img = document.createElement('img');
-stripe_img.src = "/img/stripe.png";
-
-// can i do this?
-STRIPE_PATTERN = null;
-stripe_img.onload = function() {
-  STRIPE_PATTERN = ctx.createPattern(stripe_img,"repeat");
-}.bind(this);
-
-
-var img_src = "/img/earth.png";
+var img_src = "/img/earth-doctored.png";
 
 var population_dimension = {
   position: {
-    block_x: 150,
-    block_y: 60,
+    //block_x: 150,
+    //block_y: 60,
+
+    block_x: 255,
+    block_y: 16,
   },
   size: 100
 }
