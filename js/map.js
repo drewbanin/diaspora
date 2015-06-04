@@ -71,32 +71,4 @@ Map.prototype.getFeatures = function(x, y, block_size) {
   return ImageProcessor.getBlockFeatures(this.ctx, block, this.dimensions);
 };
 
-// update the population's understanding of the map. This entails adding features from
-// each block surrounding an occupied block to the this.map hash. Naively, this will
-// check every surrouding block on every step. That sucks, so let's find some dirty checking
-// way to avoid doing that work for known blocks
-Map.prototype.update = function(ctx, populations) {
-  var adjacent_blocks = populations.adjacent_blocks();
-
-  _.each(adjacent_blocks, function(block, hash) {
-    // quit if we know about this block already
-    if (this.map[hash]) return;
-    // else, analyze the block and record it in this.map
-
-    var block = {
-      x: block[0] * this.dimensions.block_size,
-      y: block[1] * this.dimensions.block_size,
-      block_size: this.dimensions.block_size
-    };
-    var features = ImageProcessor.getBlockFeatures(ctx, block, this.dimensions);
-    this.map[hash] = {
-      features: features,
-      hospitability: this.hospitability(features),
-    }
-  }.bind(this));
-
-  // console.log("" + Object.keys(this.map).length + " known blocks");
-};
-
 module.exports = Map;
-

@@ -133,19 +133,4 @@ Population.prototype.hash = function() {
   return "" + this.position.block_x + "," + this.position.block_y;
 };
 
-Population.prototype.adjacent_blocks = function() {
-  var bx = this.position.block_x;
-  var by = this.position.block_y;
-  return [[bx, by],
-          [bx - 1, by],
-          [bx - 1, by - 1],
-          [bx, by - 1],
-          [bx + 1, by - 1],
-          [bx + 1, by],
-          [bx + 1, by + 1],
-          [bx, by + 1],
-          [bx - 1, by + 1]
-  ];
-};
-
 module.exports = Population;

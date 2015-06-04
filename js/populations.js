@@ -57,18 +57,4 @@ Populations.prototype.adjacent_populations = function(pop) {
   }.bind(this));
 };
 
-Populations.prototype.adjacent_blocks = function() {
-  var adj = {};
-
-  _.each(this.populations, function(population) {
-    var blocks = population.adjacent_blocks();
-    _.each(blocks, function(block) {
-      var key = "" + block[0] + "," + block[1];
-      adj[key] = block;
-    }.bind(this));
-  }.bind(this));
-
-  return adj;
-};
-
 module.exports = Populations;

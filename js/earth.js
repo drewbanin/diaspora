@@ -65,12 +65,7 @@ Earth.prototype.mainloop = function() {
   ctx.clearRect(0 ,0, this.canvas.width, this.canvas.height);
   ctx.drawImage(this.map_image, 0, 0, this.dimensions.width, this.dimensions.height);
 
-  // this has to come immediately after drawImage before anything else is
-  // drawn! it scans the canvas to determine what features exist in the necessary blocks
-  this.map.update(this.ctx, this.populations);
-
-  // we need to advance the state before we redraw because some components need
-  // to query the map!
+  // advance state before we redraw b/c some components need to query the map!
   this.populations.step(this.map, this.TICKS);
 
   this.populations.render(ctx);
