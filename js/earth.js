@@ -82,7 +82,11 @@ Earth.prototype.mainloop = function() {
 
   HUD.render(this.ctx, this.stats);
   this.TICKS += 1;
-  setTimeout(this.mainloop.bind(this), this.timeout);
+  var time_to_render = Date.now() - start;
+
+  // don't want to crash the browser... is 5ms enough?
+  var var_timeout = Math.max((this.timeout - time_to_render), 5);
+  setTimeout(this.mainloop.bind(this), var_timeout);
 };
 
 Earth.prototype.draw_grid = function(ctx) {
