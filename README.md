@@ -1,9 +1,9 @@
-# Diaspora 
-### CS 485, Summer 2015
-### Drew Banin
+## Diaspora  - CS 485, Summer 2015
 
-### Hypothesis:
+#### Hypothesis:
 The human diaspora out of Africa can be modeled with cellular automata.
+
+=================================
 
 ### Running the simulation
 From the root of this repo, run:
