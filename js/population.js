@@ -6,17 +6,18 @@ var Explorer = require("./explorer");
 // it seems like a reasonable number for testing
 var MAX_POPULATION = 1000;
 
-var Population = function(dimensions, num_ticks, parent) {
+var Population = function(dimensions, num_ticks, parent, world_dimensions) {
   this.position = dimensions.position;
   this.size = dimensions.size;
   this.parent = parent;
+  this.dimensions = world_dimensions;
 
   this.pct_explorers = 0.50;
   this.pct_settlers = 0.50;
 
   this.num_ticks = num_ticks || 0;
 
-  this.explorer = new Explorer(this);
+  this.explorer = new Explorer(this, world_dimensions);
 
   this.moves_to_target = [];
   this.moving = false;
@@ -31,7 +32,7 @@ Population.prototype.relocate = function(pos, moves, populations) {
 
   if (this_size < 1 || other_size < 1) debugger
 
-  var new_pop = new Population({position: this.position, size: this_size}, this.num_ticks, this.parent);
+  var new_pop = new Population({position: this.position, size: this_size}, this.num_ticks, this.parent, this.dimensions);
   new_pop.surrounded = this.surrounded;
   this.size = other_size;
   this.num_ticks = 0;

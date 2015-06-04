@@ -9,8 +9,9 @@ var STATES = {
 
 var MAX_DISTANCE = 10;
 
-var Explorer = function(population) {
+var Explorer = function(population, dimensions) {
   this.population = population;
+  this.dimensions = dimensions;
   this.position = {
     block_x: population.position.block_x,
     block_y: population.position.block_y,
@@ -146,17 +147,22 @@ Explorer.prototype.random_pos_from_here = function(max_distance) {
   if (_.random(0,1) == 1) dx *= -1;
   if (_.random(0,1) == 1) dy *= -1;
 
-  return {
-    block_x: this.position.block_x + dx,
+  var pos =  {
+    //block_x: (this.position.block_x + dx) % this.dimensions.h_blocks,
+    block_x: (this.position.block_x + dx),
     block_y: this.position.block_y + dy,
   };
+
+  if (pos.block_x < 10) console.log(pos);
+
+  return pos;
 };
 
 
 Explorer.prototype.render = function(ctx, block_size) {
   var radius = block_size / 5;
 
-  var x = this.position.block_x * block_size;
+  var x = (this.position.block_x  % this.dimensions.h_blocks) * block_size;
   var y = this.position.block_y * block_size;
   ctx.fillStyle = this.get_color();
   ctx.beginPath();

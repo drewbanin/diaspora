@@ -68,7 +68,7 @@ Map.prototype.hash = function(block_x, block_y) {
 
 Map.prototype.getFeatures = function(x, y, block_size) {
   var block = {x: x, y: y, block_size: block_size};
-  return ImageProcessor.getBlockFeatures(this.ctx, block);
+  return ImageProcessor.getBlockFeatures(this.ctx, block, this.dimensions);
 };
 
 // update the population's understanding of the map. This entails adding features from
@@ -88,7 +88,7 @@ Map.prototype.update = function(ctx, populations) {
       y: block[1] * this.dimensions.block_size,
       block_size: this.dimensions.block_size
     };
-    var features = ImageProcessor.getBlockFeatures(ctx, block);
+    var features = ImageProcessor.getBlockFeatures(ctx, block, this.dimensions);
     this.map[hash] = {
       features: features,
       hospitability: this.hospitability(features),

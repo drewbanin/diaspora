@@ -4,8 +4,8 @@ var FeatureColors = require('./feature_colors');
 
 var ImageProcessor = {
 
-  getBlockFeatures : function(ctx, block) {
-    var imgd = ctx.getImageData(block.x, block.y, block.block_size, block.block_size);
+  getBlockFeatures : function(ctx, block, earth_dimensions) {
+    var imgd = ctx.getImageData(block.x % earth_dimensions.width, block.y, block.block_size, block.block_size);
     var pix = imgd.data;
 
     var pixel_counts = {

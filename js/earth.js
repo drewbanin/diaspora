@@ -16,7 +16,7 @@ var Earth = function(canvas, ctx, dimensions, image_src, population_dimension, l
 
   this.populations = new Populations(dimensions.block_size);
 
-  this.populations.add(new Population(population_dimension, 0, this.populations));
+  this.populations.add(new Population(population_dimension, 0, this.populations, dimensions));
 
   // hash of grid coords -> block information
   this.map = new Map(this.dimensions, this.ctx, this.dimensions.block_size);
