@@ -127,8 +127,6 @@ Population.prototype.get_color = function() {
   if (this.moving) {
     var color = Color({r: 255, g: 255, b: 255, a: 0.5});
   } else {
-    //var alpha = this.size / 10000;
-    //var color = Color({r: 0, g: 0, b: 0, a: alpha});
     var solid_color = "#" + window.POPULATION_GRADIENT.colourAt(Math.min(Math.floor(this.size / 100), 100));
     var color = Color(solid_color);
     color.clearer(0.3);

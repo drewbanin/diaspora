@@ -10,7 +10,7 @@ var FEAT_HOSP = {
   ice: 0.01,
 };
 
-var MAX_TEMP = 7;
+var MAX_TEMP = 15;
 
 var Map = function(dimensions, ctx, block_size) {
   this.dimensions = dimensions
