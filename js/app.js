@@ -24,11 +24,13 @@ var img_src = "/img/earth-doctored.png";
 
 var population_dimension = {
   position: {
-    //block_x: 150,
-    //block_y: 60,
+    // ethiopia
+    block_x: 150,
+    block_y: 60,
 
-    block_x: 255,
-    block_y: 16,
+    // bering strait
+    //block_x: 255,
+    //block_y: 16,
   },
   size: 100
 }
