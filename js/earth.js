@@ -3,6 +3,7 @@ var HUD = require('./hud.js');
 var Populations = require('./populations.js');
 var Population = require('./population')
 var Map = require('./map.js');
+var StatCollector = require('./stat_collector');
 
 var Earth = function(canvas, ctx, dimensions, image_src, population_dimension, loaded) {
   var image_src = image_src;
@@ -13,10 +14,12 @@ var Earth = function(canvas, ctx, dimensions, image_src, population_dimension, l
   this.timeout = 60;
   this.TICKS = 0;
 
-
   this.populations = new Populations(dimensions.block_size);
 
   this.populations.add(new Population(population_dimension, 0, this.populations, dimensions));
+
+  // ice cores?
+  this.stat_collector = new StatCollector(this, population_dimension);
 
   // hash of grid coords -> block information
   this.map = new Map(this.dimensions, this.ctx, this.dimensions.block_size);
@@ -56,6 +59,7 @@ var Earth = function(canvas, ctx, dimensions, image_src, population_dimension, l
 };
 
 Earth.prototype.mainloop = function() {
+  this.stat_collector.tick(this.TICKS);
   var start = Date.now();
   var ctx = this.ctx;
   ctx.clearRect(0 ,0, this.canvas.width, this.canvas.height);
