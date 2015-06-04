@@ -11,7 +11,7 @@ var Earth = function(canvas, ctx, dimensions, image_src, population_dimension, l
   this.canvas = canvas;
   this.ctx = ctx;
   this.dimensions = dimensions;
-  this.timeout = 60;
+  this.timeout = 5;
   this.TICKS = 0;
 
   this.populations = new Populations(dimensions.block_size);
@@ -80,6 +80,7 @@ Earth.prototype.mainloop = function() {
   var time_to_render = Date.now() - start;
 
   // don't want to crash the browser... is 5ms enough?
+  // NOTE: currently disabled
   var var_timeout = Math.max((this.timeout - time_to_render), 5);
   setTimeout(this.mainloop.bind(this), var_timeout);
 };

@@ -3,6 +3,7 @@ var Population = require('./population')
 
 var Populations = function(block_size) {
   this.populations = []
+  this.population_hash = {}
   this.block_size = block_size;
 };
 
@@ -17,10 +18,22 @@ Populations.prototype.step = function(map, global_ticks) {
   //console.log("pops: ", Object.keys(this.populations).length);
 };
 
+Populations.prototype.hash = function(bx, by) {
+  return "" + bx + "," + by;
+};
+
 Populations.prototype.population_at = function(bx, by) {
-  return _.find(this.populations, function(pop) {
+  var hash = this.hash(bx, by);
+
+  var cached = this.population_hash[hash];
+  if (cached && !cached.moving && !cached.explorer.target_pos) return cached;
+
+  var pop = _.find(this.populations, function(pop) {
     return pop.position.block_x == bx && pop.position.block_y == by;
   }.bind(this));
+
+  this.population_hash[hash] = pop;
+  return pop;
 };
 
 Populations.prototype.occupied = function(position) {
