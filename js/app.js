@@ -2,6 +2,10 @@
 
 _ = require('underscore');
 $ = require('jquery');
+Rainbow = require("rainbowvis.js");
+
+window.POPULATION_GRADIENT = new Rainbow();
+window.POPULATION_GRADIENT.setSpectrum('blue', 'red');
 
 var Earth = require('./earth')
 

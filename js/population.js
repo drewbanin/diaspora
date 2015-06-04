@@ -7,6 +7,16 @@ var Explorer = require("./explorer");
 var MAX_POPULATION = 1000;
 var STOP_EXPLORING_AT = 300;
 
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+};
+
+
 var Population = function(dimensions, num_ticks, parent, world_dimensions) {
   this.position = dimensions.position;
   this.size = dimensions.size;
@@ -117,8 +127,11 @@ Population.prototype.get_color = function() {
   if (this.moving) {
     var color = Color({r: 255, g: 255, b: 255, a: 0.5});
   } else {
-    var alpha = this.size / 10000;
-    var color = Color({r: 0, g: 0, b: 0, a: alpha});
+    //var alpha = this.size / 10000;
+    //var color = Color({r: 0, g: 0, b: 0, a: alpha});
+    var solid_color = "#" + window.POPULATION_GRADIENT.colourAt(Math.min(Math.floor(this.size / 100), 100));
+    var color = Color(solid_color);
+    color.clearer(0.3);
   }
   return color.rgbaString();
 };
