@@ -114,9 +114,9 @@ Population.prototype.render = function(ctx, block_size) {
 
 Population.prototype.get_color = function() {
   if (this.moving) {
-    var color = Color({r: 255, g: 0, b: 0, a: 1});
+    var color = Color({r: 255, g: 255, b: 255, a: 0.5});
   } else {
-    var alpha = Math.min(this.size / MAX_POPULATION, 0.7);
+    var alpha = this.size / 10000;
     var color = Color({r: 0, g: 0, b: 0, a: alpha});
   }
   return color.rgbaString();

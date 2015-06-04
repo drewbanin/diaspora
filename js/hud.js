@@ -22,7 +22,7 @@ var HUD = {
       });
 
       y += font_size;
-      ctx.fillText("score=" + stats.score.score, x, y);
+      ctx.fillText("score=" + stats.score.score.toFixed(2), x, y);
 
       y += font_size;
       ctx.fillText("livable=" + stats.score.possible, x, y);
