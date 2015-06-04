@@ -34,7 +34,7 @@ StatCollector.prototype.summary_stats = function() {
   _.each(this.populations(), function(population) {
     var dist = this.distance(population.position, this.initial_position);
     stats.DISP_SUM += dist;
-    stats.POPS_NUM += population.size;
+    stats.POP_SIZE += population.size;
     stats.MAX_DIST = Math.max(stats.MAX_DIST, dist);
     stats.POPS_NUM += 1;
   }.bind(this));

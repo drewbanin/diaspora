@@ -5,6 +5,7 @@ var Explorer = require("./explorer");
 // maximum population density per square. This is too low for the real sim, but
 // it seems like a reasonable number for testing
 var MAX_POPULATION = 1000;
+var STOP_EXPLORING_AT = 300;
 
 var Population = function(dimensions, num_ticks, parent, world_dimensions) {
   this.position = dimensions.position;
@@ -57,7 +58,7 @@ Population.prototype.move_to = function(pos) {
 Population.prototype.step = function(map, global_ticks) {
   this.num_ticks += 1;
 
-  if (this.num_ticks > 1000) {
+  if (this.num_ticks > STOP_EXPLORING_AT) {
     this.explorer.state = "chilling";
     return // inert
   }

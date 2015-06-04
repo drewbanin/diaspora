@@ -10,6 +10,8 @@ var FEAT_HOSP = {
   ice: 0.01,
 };
 
+var MAX_TEMP = 10;
+
 var Map = function(dimensions, ctx, block_size) {
   this.dimensions = dimensions
   this.map = {};
@@ -37,7 +39,7 @@ Map.prototype.get_hospitability = function(bx, by) {
     return cached.hospitability;
   } else {
     var features = this.getFeatures(bx * this.block_size, by * this.block_size, this.block_size);
-    var hospitability = this.hospitability(features);
+    var hospitability = this.hospitability(features, by * this.dimensions.block_size);
     var hash = this.hash(bx, by);
     this.map[hash] = {
       hospitability: hospitability,
@@ -47,7 +49,7 @@ Map.prototype.get_hospitability = function(bx, by) {
   }
 };
 
-Map.prototype.hospitability = function(features) {
+Map.prototype.hospitability = function(features, latitude) {
   var f = features;
   if (f.pct_water > 0.4) {
     return {possible: false, score: 0};
@@ -57,6 +59,8 @@ Map.prototype.hospitability = function(features) {
          f.pct_desert * FEAT_HOSP.desert +
          f.pct_water  * FEAT_HOSP.water  +
          f.pct_ice * FEAT_HOSP.ice;
+
+  hosp = Math.max(hosp - f.pct_cold * f.pct_cold, 0.1);
 
   return {possible: true, score: hosp}
 };

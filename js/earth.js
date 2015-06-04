@@ -51,7 +51,7 @@ var Earth = function(canvas, ctx, dimensions, image_src, population_dimension, l
     this.stats.mouse.block_y = by;
 
     this.stats.features = this.map.getFeatures(bx * bs, by * bs, bs);
-    this.stats.score = this.map.hospitability(this.stats.features);
+    this.stats.score = this.map.hospitability(this.stats.features, by*bs);
 
     this.stats.population = this.populations.population_at(bx, by);
   }.bind(this), false);

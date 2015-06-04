@@ -39,12 +39,14 @@ var ImageProcessor = {
     }
 
     var total_pixels = block.block_size * block.block_size;
+    var latitude = block.y;
 
     return {
       pct_water: pixel_counts.water / total_pixels,
       pct_desert: pixel_counts.desert / total_pixels,
       pct_forest: pixel_counts.forest / total_pixels,
       pct_ice: pixel_counts.ice / total_pixels,
+      pct_cold: Math.abs(latitude / earth_dimensions.height - 0.5) * 2,
     }
   },
 
