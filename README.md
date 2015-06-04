@@ -2,18 +2,21 @@
 
 #### Hypothesis:
 The human diaspora out of Africa can be modeled with cellular automata.
-
 =================================
 
 ### Running the simulation
-From the root of this repo, run:
-  `python -m SimpleHTTPServer`
-to start a webserver on port 8000
+The simulation runs as an HTML5 Canvas + JS application in your browser. This
+was tested with Chrome on a Mac, so your mileage should hopefully not vary, but may.
 
-Then navigate to http://localhost:8000 to see it in action
+To run the simulation, run
+  `python -m SimpleHTTPServer`
+from the root of this repo to start a webserver on port 8000
+
+Then navigate to http://localhost:8000 to see it in action!
 
 ### Development
-Run `npm install` to download the required dependencies for the simulation
+Run `npm install` to download the required dependencies for the simulation, then run
+`npm start` to watch JS files for changes and recompile the `bundle.js` file accordingly.
 
 ### Generating graphs
 Make sure to open the browser console once the web page has been loaded. Diagnostic
